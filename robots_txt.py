@@ -1,11 +1,12 @@
-import urllib.request
-import io
+import urllib3
+from bs4 import BeautifulSoup
+http = urllib3.PoolManager()
 def get_robots_txt(url):
     if url.endswith('/'):
         path = url
     else:
         path = url + '/'
-    req= urllib.request.urlopen( path + "robots.txt", data=None)
-    data = io.TextIOWrapper (req, encoding='utf-8')
-    return data.read()
-print(get_robots_txt('https://www.reddit.com/'))
+    response = http.request('GET', url)
+    soup = str(BeautifulSoup(response.data,features="html.parser"))
+    return soup
+#print(get_robots_txt('www.youtube.com'))
